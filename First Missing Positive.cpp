@@ -1,40 +1,9 @@
 // Problem link --->
-https://leetcode.com/problems/first-missing-positive/description/
+https://leetcode.com/problems/first-missing-positive/
 
-// Solutions --->
+// Solution --->
 
-// My initial solution (so funny)
-class Solution {
-public:
-    int firstMissingPositive(vector<int>& nums) {
-        
-        sort(nums.begin(), nums.end());
-        int n = nums.size();
-        int find_one = 0;
-
-        for (int i=0; i<n-1; ++i)
-        {
-            if(nums[i]==1)
-              find_one = 1;
-            
-            if(nums[i]<=0)
-            continue;
-
-            else 
-            {
-                if (nums[i+1]-nums[i]>1 and find_one)
-                 return nums[i]+1;
-            }
-        }
-
-        if (!find_one and nums[n-1]!=1)
-          return 1;
-
-        return nums[n-1]+1;
-    }
-};
-
-// Little bit better
+// sort + visited 
 class Solution {
 public:
     int firstMissingPositive(vector<int>& nums) {
@@ -63,7 +32,7 @@ public:
     }
 };
 
-// Easy solution (after long time)
+// set
 class Solution {
 public:
     int firstMissingPositive(vector<int>& nums) {
@@ -80,5 +49,58 @@ public:
         }
 
         return res;
+    }
+};
+
+// Most Optimal 
+/*
+Key Idea:
+- For an array of size n, the first missing positive
+  must be in range [1, n+1].
+
+Algorithm:
+1. Place each number x at index (x-1)
+   using swapping.
+   Example:
+   1 -> index 0
+   2 -> index 1
+   3 -> index 2
+
+2. Ignore:
+   - negative numbers
+   - 0
+   - numbers > n
+
+3. After rearranging, scan the array:
+   - if nums[i] != i+1,
+     then answer = i+1
+
+4. If all positions are correct,
+   answer = n+1
+
+Complexity:
+- Time: O(n)
+- Space: O(1)
+*/
+
+// Code 
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+
+        for (int i = 0; i < n; i++) {
+            while (nums[i] > 0 && nums[i] <= n && nums[i] != nums[nums[i] - 1]) {
+                swap(nums[i], nums[nums[i] - 1]);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+
+        return n + 1;
     }
 };
